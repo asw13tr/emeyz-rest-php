@@ -1,0 +1,18 @@
+{
+    "name": "atabasch/php-emeyz-api",
+    "autoload": {
+        "psr-4": {
+            "Atabasch\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Furkan A",
+            "email": "asw13tr@gmail.com"
+        }
+    ],
+    "require": {
+        "cocur/slugify": "^4.2",
+        "vlucas/phpdotenv": "^5.5"
+    }
+}

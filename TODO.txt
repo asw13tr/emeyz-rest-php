@@ -1,0 +1,47 @@
+-makale listesi
+-makale listesi (admin)
+-makale ekle
+	- liste oluşturulabilir.
+-makale getir
+	- makaleye ait liste elemanlarını getir
+-makale güncelle
+-makale sil
+
+
+-file upload
+
+-kategori listesi 
+-kategori listesi (admin)
+-kategori getir
+-kategori ekle
+-kategori güncelle
+-kategori sil
+
+-sayfa listesi
+-sayfa listesi (admin)
+-sayfa ekle
+-sayfa güncelle
+-sayfa sil
+
+-uye listesi (admin)
+-uye getir (şifre hariç)
+-üye oluştur
+-üye güncelle
+-üye sil
+
+-register
+-login
+
+-navigasyon menuleri
+-menu getir (itemleri)
+-menuye item ekle
+-menü düzennle
+-item düzenle
+-menü sil
+-item sil
+
+-media listesi 
+-media bilgisi getir.
+-media ekle
+-media sil
+-media güncelle
