@@ -4,7 +4,10 @@ namespace Atabasch;
 
 class BaseController{
 
+    private $postDatas = [];
     public function __construct(){
+
+        $this->postDatas = count($_POST) > 0? $_POST : json_decode(file_get_contents('php://input'), true) ;
 
     }
 
@@ -30,9 +33,9 @@ class BaseController{
 
     protected function post($key=null, $default=null){
         if(!$key){
-            return $_POST;
+            return $this->postDatas;
         }
-        return isset($_POST[$key])? $_POST[$key] : $default;
+        return isset($this->postDatas[$key])? $this->postDatas[$key] : $default;
     }
 
 }

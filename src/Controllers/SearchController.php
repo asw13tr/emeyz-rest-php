@@ -7,8 +7,9 @@ class SearchController extends \Atabasch\BaseController
 
 
     public function index(){
-        if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['s']) && @strlen($_POST['s']) > 2){
-            $this->getPosts($_POST['s']);
+        $s = $this->post('s', null);
+        if($_SERVER["REQUEST_METHOD"] == 'POST' && $s){
+            $this->getPosts($s);
         }else{
          $this->json([]);
         }
