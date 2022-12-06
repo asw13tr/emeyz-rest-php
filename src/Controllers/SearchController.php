@@ -20,7 +20,7 @@ class SearchController extends \Atabasch\BaseController
         $offset = $_GET["offset"] ?? 0;
         $limit  = $_GET["limit"] ?? 10;
 
-        $sql = "SELECT id, title, views, IF(summary != '', summary, description) AS description FROM articles
+        $sql = "SELECT id, title, views, IF(summary != '', summary, description) AS description FROM articles, cover
                 WHERE status='published' AND 
                       (title LIKE ? OR description  LIKE ? OR summary LIKE ?) 
                  ORDER BY views DESC 
