@@ -32,7 +32,7 @@ class NavigationController extends \Atabasch\BaseController{
             foreach($menu as $menuItem){
                 $itemsSql   = "SELECT * FROM navigations WHERE type='item' AND parent=? ORDER BY menu_order ASC";
                 $items      = $this->db()->queryAll($itemsSql, [$menuItem->id]);
-                $menuItem->items = $items;
+                $menuItem->data = $items;
                 $result[] =  $menuItem;
             }
         }
