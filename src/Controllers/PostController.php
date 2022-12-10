@@ -55,6 +55,19 @@ class PostController extends \Atabasch\BaseController {
     }
 
 
+    public function views(){
+        $id     = $this->post("id", null);
+        $value  = $this->post('value', null);
+        if($this->hasRequestMethod("POST")){
+            if($id && $value){
+                $sql = "UPDATE articles SET views=views+? WHERE id=?";
+                $this->db()->update($sql, [$value, $id]);
+            }
+        }
+        return $this->json([ 'id'=>$id, 'value'=>$value ]);
+    }
+
+
 
     public function create(){
 //        $slugify = new Slugify();

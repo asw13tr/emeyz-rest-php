@@ -38,4 +38,14 @@ class BaseController{
         return isset($this->postDatas[$key])? $this->postDatas[$key] : $default;
     }
 
+    protected function hasRequestMethod($methods=["get"]){
+        if(!is_array($methods)){
+            $methods = explode(',', $methods);
+        }
+        $methods = array_map(function($i){
+                                return strtoupper(trim($i));
+                            }, $methods);
+        return in_array(strtoupper($_SERVER['REQUEST_METHOD']), $methods);
+    }
+
 }
