@@ -54,8 +54,8 @@ class PostController extends \Atabasch\BaseController {
     public function favorites(){
         if($this->hasRequestMethod("POST")){
            $favorites   = $this->post("favorites", false);
-           $offset      = $this->post("offset", 0);
-           $limit       = $this->post("limit", 15);
+           $offset      = $this->get("offset", 0);
+           $limit       = $this->get("limit", 15);
 
            $favorites   = explode(',', $favorites);
            $inChars     = str_repeat('?,', count($favorites) - 1) . '?';

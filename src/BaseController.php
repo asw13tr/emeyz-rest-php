@@ -27,8 +27,8 @@ class BaseController{
         return new Database();
     }
 
-    protected function get(){
-
+    protected function get($key=null, $default=null){
+        return $_GET[$key] ?? $default;
     }
 
     protected function post($key=null, $default=null){
