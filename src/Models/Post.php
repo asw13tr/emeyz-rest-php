@@ -74,6 +74,8 @@ class Post extends \Atabasch\Model {
         $sql = "SELECT * FROM articles WHERE id=? {$where}";
         $post = $this->queryOne($sql, [$id]);
 
+        $postItems = $this->queryAll("SELECT * FROM lists WHERE status='published' AND parent=? ORDER BY `order`", [$id]);
+
         $categoriesSql = "SELECT cat.id,cat.title,cat.slug FROM blog_categories as cat
                           INNER JOIN conn_art_cat as conn
                           ON conn.blog_category_id=cat.id 
@@ -81,6 +83,7 @@ class Post extends \Atabasch\Model {
         $categories = $this->queryAll($categoriesSql, [$id]);
 
         $post->categories = $categories;
+        $post->contentItems = $postItems;
 
         return $post;
     }

@@ -39,22 +39,44 @@ class PostController extends \Atabasch\BaseController {
         $this->json($datas);
     }
 
+
+
     private function getOne($id=null){
-        $isAll = $_GET['all'] ?? false;
-        if(!$id){
-            $this->json($this->postModel->getPosts($isAll));
-            // todo: gelen veriyi kontrol edip boş verri için çıktı üret
+        $post = $this->postModel->getPost($id);
+        if(!$post){
+            $this->notFound();
         }else{
-            $post = $this->postModel->getPost($id, $isAll);
-            if(!$post){
-                $this->notFound();
-            }else{
-                $this->json($post);
-            }
+            $this->json($post);
         }
     }
 
 
+    public function favorites(){
+        if($this->hasRequestMethod("POST")){
+           $favorites   = $this->post("favorites", false);
+           $offset      = $this->post("offset", 0);
+           $limit       = $this->post("limit", 15);
+
+           $favorites   = explode(',', $favorites);
+           $inChars     = str_repeat('?,', count($favorites) - 1) . '?';
+
+           if($favorites){
+               $sql = "SELECT a.id, a.title, a.keywords, a.description, a.summary, a.content, a.views, a.cover, a.video, a.p_time,
+                           (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', c.id, 'title', c.title, 'slug', c.slug)) FROM blog_categories c
+                               INNER JOIN conn_art_cat cac on c.id = cac.blog_category_id
+                                WHERE cac.article_id=a.id AND c.status='published' AND c.hide=false) AS categories
+                        FROM articles a
+                        WHERE a.status='published' AND a.id IN ({$inChars})
+                        ORDER BY a.id DESC 
+                        LIMIT {$offset},{$limit}";
+               $posts = $this->db()->queryAll($sql, $favorites);
+           }
+        }
+        return $this->json( $posts ?? [] );
+    }
+
+
+    // gGörüntülenme arttır
     public function views(){
         $id     = $this->post("id", null);
         $value  = $this->post('value', null);
@@ -66,6 +88,7 @@ class PostController extends \Atabasch\BaseController {
         }
         return $this->json([ 'id'=>$id, 'value'=>$value ]);
     }
+
 
 
 
