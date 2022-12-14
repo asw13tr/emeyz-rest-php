@@ -42,7 +42,7 @@ class CategoryController extends \Atabasch\BaseController
         FROM blog_categories as c
         WHERE c.status='published' AND c.id=? 
         ORDER BY total DESC";
-        $categories = $this->db()->queryOne($sql, [$id]);
+        $category = $this->db()->queryOne($sql, [$id]);
 
         $offset = $_GET["offset"] ?? 0;
         $limit = $_GET["limit"] ?? 10;
@@ -55,10 +55,13 @@ class CategoryController extends \Atabasch\BaseController
             WHERE c.blog_category_id=? AND p.status='published'  
             ORDER BY p.id DESC 
             LIMIT {$offset}, {$limit} ";
-            $categories->posts = $this->db()->queryAll($sqlForPosts, [$id]);
+            $posts = $this->db()->queryAll($sqlForPosts, [$id]);
         }
 
-        $this->json($categories);
+        $this->json([
+            'category'  => $category,
+            'posts'     => $posts
+        ]);
     }
 
 
