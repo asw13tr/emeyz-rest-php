@@ -25,6 +25,8 @@ class PostController extends \Atabasch\BaseController {
     private function getAll(){
         $offset     = $_GET["offset"] ?? 0;
         $limit      = $_GET["limit"] ?? 10;
+        $orderBy    = $_GET["orderby"] ?? "id";
+        $sort       = $_GET["sort"] ?? "DESC";
 
         $sql        = "SELECT a.id, a.title, a.slug, a.keywords, a.description, a.summary, a.content, a.views, a.cover, a.video, a.p_time, a.hide_cover,
                            (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', c.id, 'title', c.title, 'slug', c.slug)) FROM blog_categories c
@@ -32,7 +34,7 @@ class PostController extends \Atabasch\BaseController {
                                 WHERE cac.article_id=a.id AND c.status='published' AND c.hide=false) AS categories
                         FROM articles a
                         WHERE a.status='published'
-                        ORDER BY a.id DESC
+                        ORDER BY a.{$orderBy} {$sort}
                         LIMIT {$offset}, {$limit}";
 
         $datas      = $this->db()->queryAll($sql);
@@ -74,6 +76,7 @@ class PostController extends \Atabasch\BaseController {
         }
         return $this->json( $posts ?? [] );
     }
+
 
 
     // gGörüntülenme arttır

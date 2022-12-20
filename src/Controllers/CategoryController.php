@@ -46,6 +46,8 @@ class CategoryController extends \Atabasch\BaseController
 
         $offset = $_GET["offset"] ?? 0;
         $limit = $_GET["limit"] ?? 10;
+        $orderBy    = $_GET["orderby"] ?? "id";
+        $sort       = $_GET["sort"] ?? "DESC";
 
         if($param3=='posts'){
             $sqlForPosts = "SELECT 
@@ -53,7 +55,7 @@ class CategoryController extends \Atabasch\BaseController
             FROM articles AS p 
             INNER JOIN conn_art_cat AS c ON c.article_id=p.id 
             WHERE c.blog_category_id=? AND p.status='published'  
-            ORDER BY p.id DESC 
+            ORDER BY p.{$orderBy} {$sort} 
             LIMIT {$offset}, {$limit} ";
             $posts = $this->db()->queryAll($sqlForPosts, [$id]);
         }
