@@ -26,7 +26,7 @@ class PostController extends \Atabasch\BaseController {
         $offset     = $_GET["offset"] ?? 0;
         $limit      = $_GET["limit"] ?? 10;
 
-        $sql        = "SELECT a.id, a.title, a.keywords, a.description, a.summary, a.content, a.views, a.cover, a.video, a.p_time, a.hide_cover,
+        $sql        = "SELECT a.id, a.title, a.slug, a.keywords, a.description, a.summary, a.content, a.views, a.cover, a.video, a.p_time, a.hide_cover,
                            (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', c.id, 'title', c.title, 'slug', c.slug)) FROM blog_categories c
                                INNER JOIN conn_art_cat cac on c.id = cac.blog_category_id
                                 WHERE cac.article_id=a.id AND c.status='published' AND c.hide=false) AS categories
