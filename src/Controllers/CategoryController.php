@@ -31,7 +31,7 @@ class CategoryController extends \Atabasch\BaseController
     }
 
 
-    private function getOne($id, $param3=null){
+    private function getOne($idOrSlug, $param3=null){
         $sql = "
         SELECT c.id, 
         c.title, 
@@ -40,9 +40,9 @@ class CategoryController extends \Atabasch\BaseController
         c.parent,
         (SELECT count(*) FROM conn_art_cat WHERE blog_category_id=c.id) as total 
         FROM blog_categories as c
-        WHERE c.status='published' AND c.id=? 
+        WHERE c.status='published' AND (c.id=? OR c.slug=?)
         ORDER BY total DESC";
-        $category = $this->db()->queryOne($sql, [$id]);
+        $category = $this->db()->queryOne($sql, [$idOrSlug, $idOrSlug]);
 
         $offset = $_GET["offset"] ?? 0;
         $limit = $_GET["limit"] ?? 10;
@@ -57,12 +57,12 @@ class CategoryController extends \Atabasch\BaseController
             WHERE c.blog_category_id=? AND p.status='published'  
             ORDER BY p.{$orderBy} {$sort} 
             LIMIT {$offset}, {$limit} ";
-            $posts = $this->db()->queryAll($sqlForPosts, [$id]);
+            $posts = $this->db()->queryAll($sqlForPosts, [$category->id]);
         }
 
         $this->json([
             'category'  => $category,
-            'posts'     => $posts
+            'posts'     => $posts ?? array()
         ]);
     }
 
