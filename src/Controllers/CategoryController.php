@@ -51,7 +51,7 @@ class CategoryController extends \Atabasch\BaseController
 
         if($param3=='posts'){
             $sqlForPosts = "SELECT 
-            p.id, p.title, p.slug, p.description, p.summary, p.views, p.cover    
+            p.id, p.title, p.slug, p.keywords, p.description, p.summary, p.views, p.cover, p.video, p.p_time, p.hide_cover 
             FROM articles AS p 
             INNER JOIN conn_art_cat AS c ON c.article_id=p.id 
             WHERE c.blog_category_id=? AND p.status='published'  
