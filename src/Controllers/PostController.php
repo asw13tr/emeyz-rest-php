@@ -14,11 +14,11 @@ class PostController extends \Atabasch\BaseController {
     }
 
 
-    public function index($id=null){
-        if(!$id){
+    public function index($idOrSlug=null){
+        if(!$idOrSlug){
             $this->getAll();
         }else{
-            $this->getOne($id);
+            $this->getOne($idOrSlug);
         }
     }
 
@@ -43,8 +43,8 @@ class PostController extends \Atabasch\BaseController {
 
 
 
-    private function getOne($id=null){
-        $post = $this->postModel->getPost($id);
+    private function getOne($idOrSlug=null){
+        $post = $this->postModel->getPost($idOrSlug);
         if(!$post){
             $this->notFound();
         }else{

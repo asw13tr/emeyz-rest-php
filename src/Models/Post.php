@@ -69,18 +69,20 @@ class Post extends \Atabasch\Model {
         $where = !$isAll? "WHERE status='published'" : null;
         return $this->queryAll("SELECT * FROM articles {$where} ORDER BY id DESC");
     }
-    public function getPost($id, $isAll=false){
+    public function getPost($idOrSlug, $isAll=false){
         $where = !$isAll? "AND status='published'" : null;
-        $sql = "SELECT * FROM articles WHERE id=? {$where}";
-        $post = $this->queryOne($sql, [$id]);
+        $sql = "SELECT * FROM articles WHERE (id=? OR slug=?) {$where}";
+        $post = $this->queryOne($sql, [$idOrSlug, $idOrSlug]);
 
-        $postItems = $this->queryAll("SELECT * FROM lists WHERE status='published' AND parent=? ORDER BY `order`", [$id]);
+        if(!$post){ return false; }
+
+        $postItems = $this->queryAll("SELECT * FROM lists WHERE status='published' AND parent=? ORDER BY `order`", [$post->id]);
 
         $categoriesSql = "SELECT cat.id,cat.title,cat.slug FROM blog_categories as cat
                           INNER JOIN conn_art_cat as conn
                           ON conn.blog_category_id=cat.id 
                           WHERE conn.article_id=?";
-        $categories = $this->queryAll($categoriesSql, [$id]);
+        $categories = $this->queryAll($categoriesSql, [$post->id]);
 
         $post->categories = $categories;
         $post->contentItems = $postItems;
