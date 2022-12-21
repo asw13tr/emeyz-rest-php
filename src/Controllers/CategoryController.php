@@ -37,6 +37,7 @@ class CategoryController extends \Atabasch\BaseController
         c.title, 
         c.slug, 
         c.description, 
+        c.cover, 
         c.parent,
         (SELECT count(*) FROM conn_art_cat WHERE blog_category_id=c.id) as total 
         FROM blog_categories as c
