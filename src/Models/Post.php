@@ -32,12 +32,11 @@ class Post extends \Atabasch\Model {
             'maxLength' => [70, 'Başlık en fazla %number karakter olabilir']
         ],
         'description'   => [
-            'required'  => [true, 'Açıklama boş bırakılamaz'],
-            'minLength' => [16, 'Açıklama en az %number karakterden oluşmalı'],
+            'required'  => [false, 'Açıklama boş bırakılamaz'], 
             'maxLength' => [160, 'Açıklama en fazla %number karakter olabilir']
         ],
         'author'        => [
-            'required'  => [true, 'İçerik için bir yazar gerekli'],
+            'required'  => [false, 'Geçersiz yazar id si'],
             'type'      => ['int', 'Yazar alanı integer bir değer almalı'],
         ],
         'status'        => [
@@ -48,19 +47,11 @@ class Post extends \Atabasch\Model {
             'required'  => [true, 'İçerik alanı boş bırakılamaz'],
             'minLength' => [25, 'Lütfen en az %number karakterli bir içerik yazısı girin.']
         ],
-        'views'         => [
-            'type'      => ['number', 'Görüntülenme alanı sayısal bir değer içermelidir']
-        ],
         'hide_cover'    => [
             'enum'      => [['on', 'off'], 'Geçersiz girdi']
         ],
         'allow_comments'=> [
             'enum'      => [['on', 'off'], 'Geçersiz girdi']
-        ],
-        'list_order'    => [
-            'type'      => ['int', 'Sıra numarası 0 ile 100 arasında sayısal bir değer olmalıdır.'],
-            'min'       => [0, 'Sıra numarası 0 ile 100 arasında sayısal bir değer olmalıdır.'],
-            'max'       => [100, 'Sıra numarası 0 ile 100 arasında sayısal bir değer olmalıdır.'],
         ]
 
     ];
@@ -97,9 +88,117 @@ class Post extends \Atabasch\Model {
     public function create($datas){
 
             $validator = new Validator($datas, $this->rules);
-            echo '<pre>';
-            print_r($validator->getResult());
+            $errors = $validator->getResult();
+            if($errors){
+                return ['status'=>false, 'errors'=>$errors];
+            }else{
+
+                $sql = "INSERT INTO articles(title, slug, keywords, `description`, summary, author, `status`, content, cover, video, hide_cover, allow_comments, p_time ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                $values = [
+                    $datas['title'],
+                    $datas['slug'],
+                    $datas['keywords'],
+                    $datas['description'],
+                    $datas['summary'],
+                    $datas['author'],
+                    $datas['status'],
+                    $datas['content'],
+                    $datas['cover'],
+                    $datas['video'],
+                    $datas['hide_cover'],
+                    $datas['allow_comments'],
+                    $datas['p_time']
+                ];
+                $lastInsertId = $this->execute($sql, $values, true);
+                if(!$lastInsertId){
+                    return ['status'=>false, 'error'=>null];
+                }else{
+                    $sql = "INSERT INTO conn_art_cat(article_id, blog_category_id) VALUES(?,?)";
+                    foreach($datas['category_ids'] as $cid){
+                        $this->execute($sql, [$lastInsertId, $cid]);
+                    }
+                }
+                return ['status'=>true, 'id'=>$lastInsertId];
+            }
     }
+
+
+
+    public function update($datas, $id){
+
+        $validator = new Validator($datas, $this->rules);
+        $errors = $validator->getResult();
+        if($errors){
+            return ['status'=>false, 'errors'=>$errors];
+        }else{
+
+            $sql = "UPDATE articles SET 
+                            `title`=?,
+                            `slug`=?,
+                            `keywords`=?,
+                            `description`=?,
+                            `summary`=?,
+                            `author`=?,
+                            `status`=?,
+                            `content`=?,
+                            `cover`=?,
+                            `video`=?,
+                            `hide_cover`=?,
+                            `allow_comments`=?,
+                            `p_time`=?,
+                            `updated_at`=NOW()
+                    WHERE `id`=?";
+            $values = [
+                $datas['title'],
+                $datas['slug'],
+                $datas['keywords'],
+                $datas['description'],
+                $datas['summary'],
+                $datas['author'],
+                $datas['status'],
+                $datas['content'],
+                $datas['cover'],
+                $datas['video'],
+                $datas['hide_cover'],
+                $datas['allow_comments'],
+                $datas['p_time'],
+                $id
+            ];
+            $update = $this->execute($sql, $values);
+            if(!$update){
+
+            }else{
+                $removeCategoryConnect = $this->execute("DELETE FROM conn_art_cat WHERE article_id=?", [$id]);
+                if($removeCategoryConnect){
+                    $sql = "INSERT INTO conn_art_cat(article_id, blog_category_id) VALUES(?,?)";
+                    foreach($datas['category_ids'] as $cid){
+                        $this->insert($sql, [$id, $cid]);
+                    }   
+                }
+            }
+            return ['status'=>true, 'post'=>$update];
+        }
+    }
+
+
+    public function updateStatus($status, $id){
+        $sql    = "UPDATE articles SET `status`=?, `updated_at`=NOW() WHERE id=?";
+        $update = $this->execute($sql, [$status, $id] );
+        return $update;
+    }   
+
+
+
+    public function delete($id){
+        $sql = "DELETE FROM articles WHERE id=?";
+        $delete = $this->execute($sql, [$id]);
+        if($delete){
+            $deleteCategoryConnection = $this->execute("DELETE FROM conn_art_cat WHERE article_id=?", [$id]);
+            return $delete;
+        }
+        return false;
+    }
+
 
 
 

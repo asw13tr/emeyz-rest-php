@@ -86,7 +86,7 @@ class PostController extends \Atabasch\BaseController {
         if($this->hasRequestMethod("POST")){
             if($id && $value){
                 $sql = "UPDATE articles SET views=views+? WHERE id=?";
-                $this->db()->update($sql, [$value, $id]);
+                $this->db()->execute($sql, [$value, $id]);
             }
         }
         return $this->json([ 'id'=>$id, 'value'=>$value ]);

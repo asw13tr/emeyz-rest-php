@@ -13,6 +13,9 @@
     ],
     "require": {
         "cocur/slugify": "^4.2",
-        "vlucas/phpdotenv": "^5.5"
+        "vlucas/phpdotenv": "^5.5",
+        "verot/class.upload.php": "^2.1",
+        "paragonie/sodium_compat": "^1.19",
+        "firebase/php-jwt": "^6.3"
     }
 }

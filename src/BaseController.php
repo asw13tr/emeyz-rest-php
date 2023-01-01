@@ -2,13 +2,11 @@
 
 namespace Atabasch;
 
-class BaseController{
+class BaseController extends \Atabasch\Main{
 
     private $postDatas = [];
     public function __construct(){
-
         $this->postDatas = count($_POST) > 0? $_POST : json_decode(file_get_contents('php://input'), true) ;
-
     }
 
     protected function json($data = []){
@@ -22,6 +20,8 @@ class BaseController{
             'message'   => !$message? 'İçerik bulunamadı' : $message
         ]);
     }
+
+
 
     protected function db(){
         return new Database();
@@ -47,5 +47,7 @@ class BaseController{
                             }, $methods);
         return in_array(strtoupper($_SERVER['REQUEST_METHOD']), $methods);
     }
+
+
 
 }

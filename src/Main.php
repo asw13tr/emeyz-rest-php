@@ -2,8 +2,11 @@
 
 namespace Atabasch;
 
-class Model extends Database{
 
 
+class Main{
 
+    
 }
+
+?>

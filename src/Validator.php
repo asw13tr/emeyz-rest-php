@@ -91,9 +91,9 @@ class Validator{
 
     private function verify($value, $rule, $option=null){
         return match ($rule){
-            'required'  => $this->required($value),
-            'minLength' => $this->minLength($value, $option),
-            'maxLength' => $this->maxLength($value, $option),
+            'required'  => $this->required($value, $option),
+            'minLength' => $this->minLength($value ?? '', $option),
+            'maxLength' => $this->maxLength($value ?? '', $option),
             'min'       => $this->min($value, $option),
             'max'       => $this->max($value, $option),
             'type'      => $this->type($value, $option),
@@ -156,8 +156,13 @@ class Validator{
     }
 
     // gereklilik kontrolü
-    private function required($value): bool{
-        return !empty($value) && !is_null($value);
+    private function required($value, $option=false): bool{
+        
+        if(!$option){
+            return true;
+        }else{
+            return !empty($value) && !is_null($value);
+        }
     }
 
 }

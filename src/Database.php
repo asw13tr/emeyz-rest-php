@@ -1,8 +1,7 @@
 <?php
 namespace Atabasch;
 
-class Database
-{
+class Database extends \Atabasch\Main{
 
     protected $db = null;
 
@@ -38,16 +37,20 @@ class Database
         return $this->db->lastInsertId();
     }
 
-    public function update($sql, $datas=[]){
+    public function execute($sql, $datas=[], $getLastID=false){
         $query = $this->db->prepare($sql);
         $query->execute($datas);
+        if($getLastID){
+            return $this->db->lastInsertId();
+        }
         return $query->rowCount();
     }
 
-    public function delete($sql, $datas=[]){
-        $query = $this->db->prepare($sql);
-        $query->execute($datas);
-        return $query->rowCount();
+    public function getTotalOfTable($tableName='', $where=null, $datas=[]){
+        $sql    = "SELECT count(*) AS total FROM $tableName";
+        $query  = $this->db->prepare($sql);
+        $query->execute(array_merge([], $datas));
+        return $query->fetchColumn(0);
     }
 
 
